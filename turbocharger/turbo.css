@@ -1,0 +1,370 @@
+.turbo {
+  --turbo-blend: screen;
+  --turbo-button-hover: #222222;
+  --turbo-button-ring: #ffffff14;
+  --turbo-part-ring: #ffffff12;
+  --turbo-part-hover: #ffffff0a;
+  --turbo-lamp-off: #444444;
+  --turbo-lamp-on: #00b4d8;
+  --turbo-lamp-glow: #00b4d888;
+  --turbo-lamp-armed: #ff7700;
+  --turbo-lamp-warn: #ff3333;
+  --turbo-cold-0: #e0f4ff;
+  --turbo-cold-1: #00b4d8;
+  --turbo-cold-2: #0077b6;
+  --turbo-hot-0: #fff4e6;
+  --turbo-hot-1: #ff7700;
+  --turbo-hot-2: #cc2200;
+  --turbo-hot-3: #ffaa22;
+  --turbo-waste-glow: #ff4400;
+}
+
+[data-theme="light"] .turbo {
+  --turbo-blend: normal;
+  --turbo-button-hover: #f0f0ed;
+  --turbo-button-ring: #0000001a;
+  --turbo-part-ring: #00000014;
+  --turbo-part-hover: #0000000a;
+  --turbo-lamp-off: #c4c4c4;
+  --turbo-lamp-on: #0077b6;
+  --turbo-lamp-glow: #0077b655;
+  --turbo-lamp-armed: #b86200;
+  --turbo-lamp-warn: #b82200;
+  --turbo-cold-0: #0077b6;
+  --turbo-cold-1: #023e8a;
+  --turbo-cold-2: #03045e;
+  --turbo-hot-0: #ff9436;
+  --turbo-hot-1: #d93800;
+  --turbo-hot-2: #8a1400;
+  --turbo-hot-3: #ba2200;
+  --turbo-waste-glow: #ba2200;
+}
+
+.turbo .iso-plate {
+  padding: 50px 24px 60px;
+  overflow: hidden;
+}
+
+.turbo-stage {
+  position: relative;
+  border-radius: 8px;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.turbo-stage:focus-visible {
+  outline: 1px solid var(--anatomy-mid);
+  outline-offset: 4px;
+}
+
+.turbo-stage > svg,
+.turbo-stage > canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.turbo-front,
+.turbo-flow-canvas {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+}
+
+.turbo-flow-canvas {
+  pointer-events: none;
+  mix-blend-mode: var(--turbo-blend);
+}
+
+.turbo-front {
+  pointer-events: none;
+}
+
+.turbo-front .it {
+  pointer-events: visiblePainted;
+  transition: opacity 160ms ease-out;
+}
+
+.turbo-stage[data-focus] .turbo-front .it:not([data-on]) {
+  opacity: 0.18;
+}
+
+.turbo-stage[data-focus] .turbo-front .it[data-on] {
+  opacity: 1;
+}
+
+/* Cutaway / Internal X-Ray View */
+.turbo-stage[data-cutaway] .turbo-front .it[data-piece="compressor_housing"],
+.turbo-stage[data-cutaway] .turbo-front .it[data-piece="turbine_housing"] {
+  opacity: 0.22;
+}
+
+.turbo-stage[data-cutaway] .turbo-front .it[data-piece="compressor_wheel"],
+.turbo-stage[data-cutaway] .turbo-front .it[data-piece="turbine_wheel"],
+.turbo-stage[data-cutaway] .turbo-front .it[data-piece="chra"],
+.turbo-stage[data-cutaway] .turbo-front .it[data-piece="wastegate"] {
+  opacity: 1;
+}
+
+/* Controls Bar */
+.turbo-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-family: var(--anatomy-mono);
+  font-size: 11px;
+}
+
+.turbo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 13px;
+  background: var(--anatomy-card);
+  color: var(--anatomy-strong);
+  border: 1px solid var(--anatomy-lo);
+  border-radius: 5px;
+  box-shadow: var(--anatomy-lift);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 500;
+  transition: background 140ms ease, border-color 140ms ease, transform 80ms ease;
+}
+
+.turbo-btn:hover {
+  background: var(--turbo-button-hover);
+  border-color: var(--anatomy-mid);
+}
+
+.turbo-btn:active {
+  transform: translateY(1px);
+}
+
+.turbo-lamp {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--turbo-lamp-off);
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+
+.turbo-btn[data-active] .turbo-lamp {
+  background: var(--turbo-lamp-on);
+  box-shadow: 0 0 7px var(--turbo-lamp-glow);
+}
+
+.turbo-btn[data-warn] .turbo-lamp {
+  background: var(--turbo-lamp-warn) !important;
+  box-shadow: 0 0 8px var(--turbo-lamp-warn) !important;
+}
+
+/* Throttle Slider Group */
+.turbo-throttle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 10px;
+  background: var(--anatomy-card);
+  border: 1px solid var(--anatomy-lo);
+  border-radius: 5px;
+  color: var(--anatomy-text);
+}
+
+.turbo-throttle-label {
+  font-weight: 600;
+  color: var(--anatomy-strong);
+}
+
+.turbo-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 130px;
+  height: 5px;
+  background: var(--anatomy-lo);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.turbo-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--anatomy-strong);
+  border: 2px solid var(--anatomy-card);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  transition: transform 100ms ease;
+}
+
+.turbo-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.turbo-throttle-val {
+  min-width: 38px;
+  color: var(--turbo-cold-1);
+  font-weight: 600;
+}
+
+/* Presets Strip */
+.turbo-preset-strip {
+  display: flex;
+  gap: 4px;
+}
+
+.turbo-preset-btn {
+  padding: 4px 8px;
+  font-size: 10px;
+  font-family: inherit;
+  background: var(--anatomy-card);
+  color: var(--anatomy-text);
+  border: 1px solid var(--anatomy-lo);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.turbo-preset-btn:hover {
+  color: var(--anatomy-strong);
+  border-color: var(--anatomy-mid);
+}
+
+.turbo-preset-btn[data-active] {
+  background: var(--anatomy-face);
+  color: var(--anatomy-strong);
+  border-color: var(--turbo-lamp-on);
+  font-weight: 600;
+}
+
+.turbo-hint {
+  color: var(--anatomy-muted);
+  margin-left: auto;
+  font-size: 10.5px;
+}
+
+.turbo-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+/* Telemetry Dashboard Banner */
+.turbo-telemetry {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 14px;
+  background: var(--anatomy-card);
+  border: 1px solid var(--anatomy-lo);
+  border-radius: 6px;
+  font-family: var(--anatomy-mono);
+}
+
+.turbo-tele-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.turbo-tele-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--anatomy-muted);
+}
+
+.turbo-tele-val {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--anatomy-strong);
+}
+
+.turbo-tele-val[data-cold] {
+  color: var(--turbo-cold-1);
+}
+
+.turbo-tele-val[data-hot] {
+  color: var(--turbo-hot-1);
+}
+
+.turbo-tele-val[data-warn] {
+  color: var(--turbo-lamp-warn);
+}
+
+/* Legend & Parts Buttons */
+.turbo-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 10px;
+}
+
+.turbo-part-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  background: var(--anatomy-card);
+  color: var(--anatomy-text);
+  border: 1px solid var(--turbo-part-ring);
+  border-radius: 4px;
+  font-family: var(--anatomy-mono);
+  font-size: 10.5px;
+  cursor: pointer;
+  box-shadow: var(--anatomy-lift);
+  transition: all 140ms ease;
+}
+
+.turbo-part-btn:hover {
+  background: var(--turbo-part-hover);
+  color: var(--anatomy-strong);
+  border-color: var(--anatomy-mid);
+}
+
+.turbo-part-btn[data-on] {
+  background: var(--anatomy-face);
+  color: var(--anatomy-strong);
+  border-color: var(--anatomy-hi);
+  font-weight: 600;
+}
+
+.turbo-part-num {
+  color: var(--anatomy-muted);
+  font-size: 9.5px;
+}
+
+.turbo-part-btn[data-on] .turbo-part-num {
+  color: var(--anatomy-strong);
+}
+
+/* Dial Gauges Animation Helpers */
+.turbo-needle {
+  transform-origin: center;
+  transition: transform 60ms linear;
+}
+
+@media (max-width: 680px) {
+  .turbo .iso-plate {
+    padding: 38px 12px 48px;
+  }
+  .turbo-hint {
+    width: 100%;
+    margin-left: 0;
+  }
+  .turbo-telemetry {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

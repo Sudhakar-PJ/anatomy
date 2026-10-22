@@ -1,0 +1,452 @@
+.bk {
+  --bk-accent: #38bdf8;
+  --bk-accent-glow: rgba(56, 189, 248, 0.4);
+  --bk-lamp-off: #475569;
+  --bk-lamp-on: #38bdf8;
+  --bk-lamp-glow: rgba(56, 189, 248, 0.65);
+  --bk-core-color: #f59e0b;
+  --bk-crane-color: #ef4444;
+  --bk-glass-color: #38bdf8;
+  --bk-wind-color: #a78bfa;
+  --bk-steel-color: #94a3b8;
+  --bk-concrete-color: #64748b;
+  --bk-btn-bg: rgba(255, 255, 255, 0.04);
+  --bk-btn-hover: rgba(255, 255, 255, 0.08);
+  --bk-btn-active: rgba(56, 189, 248, 0.15);
+  --bk-ring: rgba(255, 255, 255, 0.12);
+  --bk-tele-bg: rgba(15, 23, 42, 0.85);
+  --bk-tele-border: rgba(255, 255, 255, 0.08);
+  --bk-tele-label: #64748b;
+  --bk-tele-val: #f8fafc;
+}
+
+[data-theme="light"] .bk {
+  --bk-accent: #0284c7;
+  --bk-accent-glow: rgba(2, 132, 199, 0.3);
+  --bk-lamp-off: #94a3b8;
+  --bk-lamp-on: #0284c7;
+  --bk-lamp-glow: rgba(2, 132, 199, 0.4);
+  --bk-core-color: #d97706;
+  --bk-crane-color: #dc2626;
+  --bk-glass-color: #0284c7;
+  --bk-wind-color: #7c3aed;
+  --bk-steel-color: #475569;
+  --bk-concrete-color: #64748b;
+  --bk-btn-bg: rgba(0, 0, 0, 0.03);
+  --bk-btn-hover: rgba(0, 0, 0, 0.06);
+  --bk-btn-active: rgba(2, 132, 199, 0.12);
+  --bk-ring: rgba(0, 0, 0, 0.1);
+  --bk-tele-bg: rgba(248, 250, 252, 0.9);
+  --bk-tele-border: rgba(0, 0, 0, 0.08);
+  --bk-tele-label: #64748b;
+  --bk-tele-val: #0f172a;
+}
+
+.bk .iso-plate {
+  padding: 44px 20px 48px;
+  overflow: hidden;
+  position: relative;
+}
+
+.bk-stage {
+  position: relative;
+  border-radius: 8px;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+  margin: 0 auto;
+}
+
+.bk-stage:active {
+  cursor: grabbing;
+}
+
+.bk-stage:focus-visible {
+  outline: 1px solid var(--anatomy-mid, #64748b);
+  outline-offset: 4px;
+}
+
+.bk-stage > svg,
+.bk-stage > canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.bk-front,
+.bk-wind-layer {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+  pointer-events: none;
+}
+
+.bk-front .it {
+  pointer-events: visiblePainted;
+  transition: opacity 180ms cubic-bezier(0.2, 0, 0, 1), transform 80ms linear;
+}
+
+.bk-stage[data-focus] .bk-front .it:not([data-on]) {
+  opacity: 0.15;
+}
+
+.bk-stage[data-focus] .bk-front .it[data-on] {
+  opacity: 1;
+}
+
+/* Structural X-Ray Mode: Glass fades to reveal hexagonal core & outriggers */
+.bk-stage[data-xray-active] .it[data-kind="glass"] {
+  opacity: 0.12 !important;
+}
+
+.bk-stage[data-xray-active] .it[data-kind="core"],
+.bk-stage[data-xray-active] .it[data-kind="outrigger"] {
+  stroke: var(--bk-core-color) !important;
+  stroke-width: 1.1px;
+}
+
+/* Equipment mode: Highlights Cranes & Concrete Pump Lines */
+.bk-stage[data-cranes-active] .it[data-kind="crane"],
+.bk-stage[data-cranes-active] .it[data-kind="pump"] {
+  stroke: var(--bk-crane-color) !important;
+  stroke-width: 1.3px;
+  filter: drop-shadow(0 0 3px var(--bk-crane-color));
+}
+
+/* Aerodynamic Wind Flow Lines */
+.bk-wind-layer {
+  opacity: 0;
+  transition: opacity 280ms ease;
+  pointer-events: none;
+}
+
+.bk-stage[data-wind-active] .bk-wind-layer {
+  opacity: 1;
+}
+
+.bk-wind-path {
+  fill: none;
+  stroke: var(--bk-wind-color);
+  stroke-width: 1.2px;
+  stroke-dasharray: 6 12;
+  animation: bkWiring 1.8s linear infinite;
+  opacity: 0.75;
+}
+
+@keyframes bkWiring {
+  from { stroke-dashoffset: 72; }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Controls Header and Bar */
+.bk-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
+  position: relative;
+  z-index: 10;
+}
+
+.bk-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.bk-btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--bk-btn-bg);
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--bk-ring);
+}
+
+.bk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: inherit;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 5px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 140ms ease;
+  user-select: none;
+}
+
+.bk-btn:hover {
+  background: var(--bk-btn-hover);
+  border-color: var(--bk-ring);
+}
+
+.bk-btn[data-active] {
+  background: var(--bk-btn-active);
+  border-color: var(--bk-accent);
+  color: var(--bk-accent);
+}
+
+.bk-lamp {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--bk-lamp-off);
+  transition: all 180ms ease;
+}
+
+.bk-btn[data-active] .bk-lamp {
+  background: var(--bk-lamp-on);
+  box-shadow: 0 0 7px var(--bk-lamp-glow);
+}
+
+/* Telemetry HUD Panel */
+.bk-tele-strip {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1.3fr 1.0fr 1.0fr 1.0fr 1.1fr;
+  gap: 10px;
+  background: var(--bk-tele-bg);
+  border: 1px solid var(--bk-tele-border);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+
+.bk-tele-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bk-tele-lbl {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--bk-tele-label);
+  white-space: nowrap;
+}
+
+.bk-tele-val {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: var(--bk-tele-val);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bk-tele-val small {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--bk-tele-label);
+  margin-left: 2px;
+}
+
+/* Timeline & Scrubbing Slider */
+.bk-scrub-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: var(--bk-btn-bg);
+  border: 1px solid var(--bk-ring);
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin-top: 6px;
+}
+
+.bk-scrub-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--bk-tele-label);
+}
+
+.bk-scrub-active-phase {
+  color: var(--bk-accent);
+  font-weight: 700;
+}
+
+.bk-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: rgba(100, 116, 139, 0.25);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.bk-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bk-accent);
+  box-shadow: 0 0 8px var(--bk-accent-glow);
+  cursor: pointer;
+  border: 2px solid #fff;
+  transition: transform 120ms ease;
+}
+
+.bk-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.18);
+}
+
+.bk-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bk-accent);
+  box-shadow: 0 0 8px var(--bk-accent-glow);
+  cursor: pointer;
+  border: 2px solid #fff;
+  transition: transform 120ms ease;
+}
+
+/* Phase Pills Container: 3x3 balanced grid */
+.bk-phase-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 12px 0 8px;
+}
+
+.bk-phase-pill {
+  display: flex;
+  flex-direction: column;
+  padding: 6px 8px;
+  background: var(--bk-btn-bg);
+  border: 1px solid var(--bk-ring);
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 140ms ease;
+}
+
+.bk-phase-pill:hover {
+  background: var(--bk-btn-hover);
+  border-color: var(--bk-accent);
+}
+
+.bk-phase-pill[data-active] {
+  background: var(--bk-btn-active);
+  border-color: var(--bk-accent);
+}
+
+.bk-phase-num {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--bk-accent);
+  letter-spacing: 0.03em;
+}
+
+.bk-phase-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--bk-tele-val);
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+.bk-phase-sub {
+  font-size: 9px;
+  color: var(--bk-tele-label);
+  margin-top: 2px;
+}
+
+/* Parts / Inspection Buttons */
+.bk-parts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.bk-part-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bk-btn-bg);
+  border: 1px solid var(--bk-ring);
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 11px;
+  font-family: inherit;
+  color: inherit;
+  text-align: left;
+  transition: all 140ms ease;
+}
+
+.bk-part-btn:hover {
+  background: var(--bk-btn-hover);
+  border-color: var(--bk-accent);
+}
+
+.bk-part-btn[data-active] {
+  background: var(--bk-btn-active);
+  border-color: var(--bk-accent);
+  color: var(--bk-accent);
+}
+
+.bk-part-num {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--bk-tele-label);
+}
+
+.bk-part-btn[data-active] .bk-part-num {
+  color: var(--bk-accent);
+}
+
+.bk-hint {
+  font-size: 10px;
+  color: var(--bk-tele-label);
+  margin-top: 8px;
+  display: block;
+}
+
+.bk-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+@media (max-width: 680px) {
+  .bk-tele-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .bk-phase-strip {
+    grid-template-columns: 1fr;
+  }
+  .bk-parts-grid {
+    grid-template-columns: 1fr;
+  }
+}

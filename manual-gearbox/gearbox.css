@@ -1,0 +1,387 @@
+.gearbox {
+  --gb-blend: screen;
+  --gb-button-hover: #1e2229;
+  --gb-button-ring: rgba(255, 255, 255, 0.12);
+  --gb-part-ring: rgba(255, 255, 255, 0.1);
+  --gb-part-hover: rgba(255, 255, 255, 0.06);
+  --gb-lamp-off: #475569;
+  --gb-lamp-on: #10b981;
+  --gb-lamp-glow: rgba(16, 185, 129, 0.6);
+  --gb-power: #ff5500;
+  --gb-power-glow: rgba(255, 85, 0, 0.35);
+  --gb-synchro: #f59e0b;
+  --gb-synchro-glow: rgba(245, 158, 11, 0.3);
+  --gb-clutch: #38bdf8;
+  --gb-clutch-glow: rgba(56, 189, 248, 0.25);
+}
+
+[data-theme="light"] .gearbox {
+  --gb-blend: normal;
+  --gb-button-hover: #f1f5f9;
+  --gb-button-ring: rgba(0, 0, 0, 0.12);
+  --gb-part-ring: rgba(0, 0, 0, 0.1);
+  --gb-part-hover: rgba(0, 0, 0, 0.05);
+  --gb-lamp-off: #94a3b8;
+  --gb-lamp-on: #059669;
+  --gb-lamp-glow: rgba(5, 150, 105, 0.35);
+  --gb-power: #d93800;
+  --gb-power-glow: rgba(217, 56, 0, 0.2);
+  --gb-synchro: #d97706;
+  --gb-synchro-glow: rgba(217, 119, 6, 0.18);
+  --gb-clutch: #0284c7;
+  --gb-clutch-glow: rgba(2, 132, 199, 0.15);
+}
+
+.gearbox .iso-plate {
+  padding: 48px 24px 60px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gearbox-stage {
+  position: relative;
+  border-radius: 8px;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.gearbox-stage:active {
+  cursor: grabbing;
+}
+
+.gearbox-stage:focus-visible {
+  outline: 1px solid var(--anatomy-mid);
+  outline-offset: 4px;
+}
+
+.gearbox-stage > svg,
+.gearbox-stage > canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gearbox-front,
+.gearbox-flow-canvas {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+}
+
+.gearbox-flow-canvas {
+  pointer-events: none;
+  mix-blend-mode: var(--gb-blend);
+}
+
+.gearbox-front {
+  pointer-events: none;
+}
+
+.gearbox-front .it {
+  pointer-events: visiblePainted;
+  transition: opacity 160ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.gearbox-stage[data-focus] .gearbox-front .it:not([data-on]) {
+  opacity: 0.14;
+}
+
+.gearbox-stage[data-focus] .gearbox-front .it[data-on] {
+  opacity: 1;
+}
+
+/* X-Ray Mode: Dims outer casing to reveal spinning gear mesh, dog teeth & synchros */
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="case_upper"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="case_lower"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="bellhousing"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="tail_housing"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="stand"] {
+  opacity: 0.15;
+}
+
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="gears_speed"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="countershaft"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="mainshaft"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="synchros"],
+.gearbox-stage[data-xray] .gearbox-front .it[data-piece="input_shaft"] {
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 8px rgba(255, 130, 20, 0.7));
+}
+
+/* Controls Bar */
+.gearbox-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+  font-family: var(--anatomy-mono);
+  font-size: 11px;
+}
+
+.gearbox-btn-group {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.gearbox-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--anatomy-mid);
+  border-radius: 4px;
+  background: var(--anatomy-card);
+  color: var(--anatomy-text);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.gearbox-btn:hover {
+  background: var(--gb-button-hover);
+  border-color: var(--anatomy-hi);
+}
+
+.gearbox-lamp {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--gb-lamp-off);
+  box-shadow: none;
+  transition: background 150ms ease, box-shadow 150ms ease;
+}
+
+.gearbox-btn[data-active] .gearbox-lamp {
+  background: var(--gb-lamp-on);
+  box-shadow: 0 0 8px var(--gb-lamp-glow);
+}
+
+.gearbox-btn[data-clutch-active] {
+  border-color: var(--gb-clutch);
+  background: var(--gb-clutch-glow);
+  color: var(--anatomy-lit);
+}
+
+.gearbox-hint {
+  color: var(--anatomy-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+}
+
+.gearbox-live {
+  margin-left: auto;
+  color: var(--anatomy-hi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+/* Interactive H-Gate Shift Console */
+.gearbox-console {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 14px 0 12px;
+  padding: 12px 18px;
+  border: 1px solid var(--anatomy-mid);
+  border-radius: 6px;
+  background: var(--anatomy-card);
+  font-family: var(--anatomy-mono);
+}
+
+.gearbox-hgate-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.gearbox-gate-label {
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--anatomy-muted);
+}
+
+.gearbox-hgate {
+  display: flex;
+  gap: 6px;
+}
+
+.gearbox-shift-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 40px;
+  border: 1px solid var(--anatomy-mid);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--anatomy-muted);
+  cursor: pointer;
+  transition: background 120ms, border-color 120ms, color 120ms, box-shadow 120ms;
+}
+
+.gearbox-shift-btn:hover {
+  border-color: var(--anatomy-hi);
+  color: var(--anatomy-text);
+  background: var(--gb-part-hover);
+}
+
+.gearbox-shift-btn[data-active] {
+  border-color: var(--gb-power);
+  background: var(--gb-power-glow);
+  color: var(--anatomy-lit);
+  box-shadow: 0 0 10px var(--gb-power-glow);
+}
+
+.gearbox-shift-name {
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.gearbox-shift-ratio {
+  font-size: 8.5px;
+  opacity: 0.8;
+}
+
+/* Gear Status & Telemetry Card */
+.gearbox-telemetry {
+  display: flex;
+  gap: 20px;
+  font-size: 11px;
+}
+
+.gearbox-telem-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.gearbox-telem-label {
+  font-size: 9px;
+  color: var(--anatomy-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gearbox-telem-val {
+  font-weight: 600;
+  color: var(--anatomy-text);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+/* RPM Throttle Slider */
+.gearbox-rpm-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0 12px;
+  font-family: var(--anatomy-mono);
+  font-size: 10.5px;
+  color: var(--anatomy-muted);
+}
+
+.gearbox-rpm-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--anatomy-mid);
+  outline: none;
+  cursor: pointer;
+}
+
+.gearbox-rpm-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--anatomy-lit);
+  cursor: grab;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+}
+
+.gearbox-rpm-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--anatomy-lit);
+  cursor: grab;
+  border: none;
+}
+
+/* Parts Buttons Grid */
+.gearbox-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 10px;
+}
+
+.gearbox-part-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 25px;
+  padding: 0 10px;
+  border: 1px solid var(--gb-part-ring);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--anatomy-muted);
+  font-family: var(--anatomy-mono);
+  font-size: 10.5px;
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms, background 120ms;
+}
+
+.gearbox-part-btn:hover {
+  color: var(--anatomy-text);
+  background: var(--gb-part-hover);
+  border-color: var(--anatomy-mid);
+}
+
+.gearbox-part-btn[data-on] {
+  color: var(--anatomy-text);
+  background: var(--gb-button-hover);
+  border-color: var(--anatomy-hi);
+}
+
+.gearbox-part-num {
+  opacity: 0.5;
+  font-size: 9px;
+}
+
+@media (max-width: 768px) {
+  .gearbox .iso-plate {
+    padding: 44px 12px 60px;
+  }
+  .gearbox-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .gearbox-console {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .gearbox-hgate {
+    justify-content: space-between;
+  }
+  .gearbox-telemetry {
+    justify-content: space-between;
+  }
+}

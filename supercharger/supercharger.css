@@ -1,0 +1,380 @@
+.sc {
+  --sc-blend: screen;
+  --sc-button-hover: #1e2229;
+  --sc-button-ring: rgba(255, 255, 255, 0.1);
+  --sc-part-ring: rgba(255, 255, 255, 0.08);
+  --sc-part-hover: rgba(255, 255, 255, 0.05);
+  --sc-lamp-off: #3a3f4b;
+  --sc-lamp-on: #00d2ff;
+  --sc-lamp-glow: rgba(0, 210, 255, 0.65);
+  --sc-lamp-armed: #ff9100;
+  --sc-lamp-warn: #ff3344;
+  --sc-cold-0: #e0f7fa;
+  --sc-cold-1: #00e5ff;
+  --sc-cold-2: #0091ea;
+  --sc-hot-0: #fff3e0;
+  --sc-hot-1: #ff9100;
+  --sc-hot-2: #ff3d00;
+  --sc-hot-3: #dd2c00;
+  --sc-mesh-glow: rgba(0, 229, 255, 0.35);
+  --sc-boost-glow: rgba(255, 145, 0, 0.45);
+}
+
+[data-theme="light"] .sc {
+  --sc-blend: normal;
+  --sc-button-hover: #ebeef2;
+  --sc-button-ring: rgba(0, 0, 0, 0.12);
+  --sc-part-ring: rgba(0, 0, 0, 0.08);
+  --sc-part-hover: rgba(0, 0, 0, 0.04);
+  --sc-lamp-off: #b0b7c3;
+  --sc-lamp-on: #0077b6;
+  --sc-lamp-glow: rgba(0, 119, 182, 0.45);
+  --sc-lamp-armed: #d46b08;
+  --sc-lamp-warn: #c5221f;
+  --sc-cold-0: #0077b6;
+  --sc-cold-1: #023e8a;
+  --sc-cold-2: #03045e;
+  --sc-hot-0: #ff9436;
+  --sc-hot-1: #d93800;
+  --sc-hot-2: #8a1400;
+  --sc-hot-3: #ba2200;
+  --sc-mesh-glow: rgba(0, 119, 182, 0.25);
+  --sc-boost-glow: rgba(217, 56, 0, 0.35);
+}
+
+.sc .iso-plate {
+  padding: 50px 24px 60px;
+  overflow: hidden;
+}
+
+.sc-stage {
+  position: relative;
+  border-radius: 8px;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.sc-stage:focus-visible {
+  outline: 1px solid var(--anatomy-mid);
+  outline-offset: 4px;
+}
+
+.sc-stage > svg,
+.sc-stage > canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.sc-front,
+.sc-flow-canvas {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+}
+
+.sc-flow-canvas {
+  pointer-events: none;
+  mix-blend-mode: var(--sc-blend);
+}
+
+.sc-front {
+  pointer-events: none;
+}
+
+.sc-front .it {
+  pointer-events: visiblePainted;
+  transition: opacity 180ms cubic-bezier(0.16, 1, 0.3, 1), filter 180ms ease;
+  cursor: pointer;
+}
+
+.sc-stage[data-focus] .sc-front .it:not([data-on]) {
+  opacity: 0.16;
+  filter: grayscale(0.6);
+}
+
+.sc-stage[data-focus] .sc-front .it[data-on] {
+  opacity: 1;
+  filter: none;
+}
+
+/* Cutaway / Stator Internal Reveal */
+.sc-stage[data-cutaway] .sc-front .it[data-piece="housing"][data-outer="true"] {
+  opacity: 0.18;
+  filter: contrast(0.8) brightness(1.1);
+}
+
+.sc-stage[data-cutaway] .sc-front .it[data-piece="housing"][data-cutout="true"] {
+  opacity: 1;
+}
+
+/* Dynamic rotating gauge needles */
+.sc-needle-boost,
+.sc-needle-iat {
+  transition: transform 60ms linear;
+}
+
+/* Controls Panel */
+.sc-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin-top: 18px;
+  padding: 14px 18px;
+  background: var(--sc-part-hover);
+  border: 1px solid var(--sc-button-ring);
+  border-radius: 8px;
+  font-family: var(--anatomy-mono, monospace);
+  font-size: 11px;
+}
+
+.sc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--sc-button-hover);
+  border: 1px solid var(--sc-button-ring);
+  border-radius: 6px;
+  color: var(--anatomy-hi);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, transform 100ms ease;
+}
+
+.sc-btn:hover {
+  background: var(--sc-part-ring);
+  border-color: var(--anatomy-mid);
+}
+
+.sc-btn:active {
+  transform: translateY(1px);
+}
+
+.sc-lamp {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sc-lamp-off);
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+.sc-btn[data-active] .sc-lamp {
+  background: var(--sc-lamp-on);
+  box-shadow: 0 0 8px var(--sc-lamp-glow);
+}
+
+.sc-btn[data-apart][data-active] .sc-lamp {
+  background: var(--sc-lamp-armed);
+  box-shadow: 0 0 8px var(--sc-lamp-armed);
+}
+
+.sc-throttle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 4px;
+  padding: 4px 10px;
+  background: var(--sc-button-hover);
+  border: 1px solid var(--sc-button-ring);
+  border-radius: 6px;
+}
+
+.sc-throttle-label {
+  color: var(--anatomy-mid);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 10px;
+}
+
+.sc-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 140px;
+  height: 5px;
+  background: var(--sc-lamp-off);
+  border-radius: 3px;
+  outline: none;
+  cursor: ew-resize;
+}
+
+.sc-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--sc-lamp-on);
+  box-shadow: 0 0 6px var(--sc-lamp-glow);
+  cursor: pointer;
+  transition: transform 100ms ease;
+}
+
+.sc-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.sc-throttle-val {
+  min-width: 38px;
+  text-align: right;
+  color: var(--sc-lamp-on);
+  font-weight: 600;
+}
+
+.sc-preset-strip {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.sc-preset-btn {
+  padding: 4px 8px;
+  background: transparent;
+  border: 1px solid var(--sc-button-ring);
+  border-radius: 4px;
+  color: var(--anatomy-mid);
+  font-family: inherit;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 120ms ease;
+}
+
+.sc-preset-btn:hover {
+  color: var(--anatomy-hi);
+  border-color: var(--anatomy-mid);
+}
+
+.sc-preset-btn[data-active] {
+  background: var(--sc-button-hover);
+  color: var(--sc-lamp-on);
+  border-color: var(--sc-lamp-on);
+  font-weight: 600;
+}
+
+.sc-hint {
+  width: 100%;
+  color: var(--anatomy-mid);
+  font-size: 10px;
+  opacity: 0.75;
+  margin-top: 2px;
+}
+
+.sc-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+/* Telemetry Dashboard Grid */
+.sc-telemetry {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--anatomy-mono, monospace);
+}
+
+.sc-tele-item {
+  padding: 8px 10px;
+  background: var(--sc-part-hover);
+  border: 1px solid var(--sc-part-ring);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sc-tele-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--anatomy-mid);
+}
+
+.sc-tele-val {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--anatomy-hi);
+}
+
+.sc-tele-val[data-cold] {
+  color: var(--sc-cold-1);
+}
+
+.sc-tele-val[data-hot] {
+  color: var(--sc-hot-1);
+}
+
+.sc-tele-val[data-boost] {
+  color: #00ffcc;
+}
+
+.sc-tele-val[data-loss] {
+  color: #ffaa00;
+}
+
+/* Legend Parts Grid */
+.sc-parts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 6px;
+  margin: 18px 0 16px;
+}
+
+.sc-part-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  background: transparent;
+  border: 1px solid var(--sc-part-ring);
+  border-radius: 5px;
+  color: var(--anatomy-mid);
+  font-family: inherit;
+  font-size: 11px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 140ms ease;
+}
+
+.sc-part-btn:hover {
+  background: var(--sc-part-hover);
+  color: var(--anatomy-hi);
+  border-color: var(--anatomy-mid);
+}
+
+.sc-part-btn[data-active] {
+  background: var(--sc-button-hover);
+  color: var(--sc-lamp-on);
+  border-color: var(--sc-lamp-on);
+  font-weight: 600;
+}
+
+.sc-part-num {
+  font-size: 9px;
+  opacity: 0.6;
+  font-family: var(--anatomy-mono, monospace);
+}
+
+/* Fluid responsive adjustments */
+@media (max-width: 768px) {
+  .sc-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .sc-preset-strip {
+    margin-left: 0;
+    justify-content: space-between;
+  }
+  .sc-telemetry {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

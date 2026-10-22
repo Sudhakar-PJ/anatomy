@@ -1,0 +1,363 @@
+.arc {
+  --arc-blend: screen;
+  --arc-button-hover: #162032;
+  --arc-button-ring: rgba(56, 189, 248, 0.25);
+  --arc-part-ring: rgba(255, 255, 255, 0.1);
+  --arc-part-hover: rgba(56, 189, 248, 0.08);
+  --arc-lamp-off: #334155;
+  --arc-lamp-on: #38bdf8;
+  --arc-lamp-glow: rgba(56, 189, 248, 0.7);
+  --arc-core: #e0f2fe;
+  --arc-plasma: #0284c7;
+  --arc-plasma-glow: rgba(56, 189, 248, 0.45);
+  --arc-mhd: #f59e0b;
+  --arc-coil: #f97316;
+}
+
+[data-theme="light"] .arc {
+  --arc-blend: normal;
+  --arc-button-hover: #e0f2fe;
+  --arc-button-ring: rgba(2, 132, 199, 0.3);
+  --arc-part-ring: rgba(0, 0, 0, 0.12);
+  --arc-part-hover: rgba(2, 132, 199, 0.08);
+  --arc-lamp-off: #94a3b8;
+  --arc-lamp-on: #0284c7;
+  --arc-lamp-glow: rgba(2, 132, 199, 0.4);
+  --arc-core: #0369a1;
+  --arc-plasma: #0284c7;
+  --arc-plasma-glow: rgba(2, 132, 199, 0.2);
+  --arc-mhd: #d97706;
+  --arc-coil: #ea580c;
+}
+
+.arc .iso-plate {
+  padding: 48px 24px 60px;
+  overflow: hidden;
+  position: relative;
+}
+
+.arc-stage {
+  position: relative;
+  border-radius: 8px;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+
+.arc-stage:active {
+  cursor: grabbing;
+}
+
+.arc-stage:focus-visible {
+  outline: 1px solid var(--anatomy-mid);
+  outline-offset: 4px;
+}
+
+.arc-stage > svg,
+.arc-stage > canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.arc-front,
+.arc-plasma-canvas {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+}
+
+.arc-plasma-canvas {
+  pointer-events: none;
+  mix-blend-mode: var(--arc-blend);
+}
+
+.arc-front {
+  pointer-events: none;
+}
+
+.arc-front .it {
+  pointer-events: visiblePainted;
+  transition: opacity 160ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.arc-stage[data-focus] .arc-front .it:not([data-on]) {
+  opacity: 0.14;
+}
+
+.arc-stage[data-focus] .arc-front .it[data-on] {
+  opacity: 1;
+}
+
+/* X-Ray / Flux View: Dims outer housing to inspect magnetic torus & coils */
+.arc-stage[data-xray] .arc-front .it[data-piece="housing"],
+.arc-stage[data-xray] .arc-front .it[data-piece="bezel"],
+.arc-stage[data-xray] .arc-front .it[data-piece="lens"],
+.arc-stage[data-xray] .arc-front .it[data-piece="stand"],
+.arc-stage[data-xray] .arc-front .it[data-piece="cooling"] {
+  opacity: 0.14;
+}
+
+.arc-stage[data-xray] .arc-front .it[data-piece="torus"],
+.arc-stage[data-xray] .arc-front .it[data-piece="coils"],
+.arc-stage[data-xray] .arc-front .it[data-piece="core"],
+.arc-stage[data-xray] .arc-front .it[data-piece="mhd"] {
+  opacity: 1 !important;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.75));
+}
+
+/* Controls Bar */
+.arc-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 16px;
+  font-family: var(--anatomy-mono);
+  font-size: 11px;
+}
+
+.arc-btn-group {
+  display: inline-flex;
+  gap: 6px;
+}
+
+.arc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--anatomy-mid);
+  border-radius: 4px;
+  background: var(--anatomy-card);
+  color: var(--anatomy-text);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.arc-btn:hover {
+  background: var(--arc-button-hover);
+  border-color: var(--anatomy-hi);
+}
+
+.arc-lamp {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--arc-lamp-off);
+  box-shadow: none;
+  transition: background 150ms ease, box-shadow 150ms ease;
+}
+
+.arc-btn[data-active] .arc-lamp {
+  background: var(--arc-lamp-on);
+  box-shadow: 0 0 8px var(--arc-lamp-glow);
+}
+
+.arc-hint {
+  color: var(--anatomy-muted);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  font-size: 10.5px;
+}
+
+.arc-live {
+  margin-left: auto;
+  color: var(--anatomy-hi);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+  font-weight: 500;
+}
+
+/* Reactor Diagnostics Telemetry Console */
+.arc-console {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 14px 0 12px;
+  padding: 12px 18px;
+  border: 1px solid var(--arc-button-ring);
+  border-radius: 6px;
+  background: var(--anatomy-card);
+  font-family: var(--anatomy-mono);
+}
+
+.arc-telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 11px;
+}
+
+.arc-telem-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.arc-telem-label {
+  font-size: 9px;
+  color: var(--anatomy-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.arc-telem-val {
+  font-weight: 600;
+  color: var(--anatomy-text);
+  font-variant-numeric: tabular-nums;
+  margin-top: 2px;
+}
+
+/* 10-Coil Diagnostics Array */
+.arc-coils-wrap {
+  margin: 10px 0;
+}
+
+.arc-coils-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--anatomy-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--anatomy-muted);
+  margin-bottom: 4px;
+}
+
+.arc-coils-strip {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  font-family: var(--anatomy-mono);
+  font-size: 9.5px;
+}
+
+.arc-coil-pill {
+  padding: 4px 2px;
+  border: 1px solid var(--anatomy-mid);
+  border-radius: 3px;
+  text-align: center;
+  background: var(--anatomy-card);
+  color: var(--anatomy-muted);
+  transition: border-color 100ms, background 100ms, color 100ms;
+}
+
+.arc-coil-pill[data-active] {
+  border-color: var(--arc-lamp-on);
+  background: var(--arc-plasma-glow);
+  color: var(--anatomy-lit);
+  box-shadow: 0 0 6px var(--arc-plasma-glow);
+}
+
+/* Power Output Throttle Slider */
+.arc-power-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0 12px;
+  font-family: var(--anatomy-mono);
+  font-size: 10.5px;
+  color: var(--anatomy-muted);
+}
+
+.arc-power-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--anatomy-mid);
+  outline: none;
+  cursor: pointer;
+}
+
+.arc-power-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--arc-lamp-on);
+  cursor: grab;
+  box-shadow: 0 0 8px var(--arc-lamp-glow);
+}
+
+.arc-power-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--arc-lamp-on);
+  cursor: grab;
+  border: none;
+}
+
+/* Parts Buttons Grid */
+.arc-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0 10px;
+}
+
+.arc-part-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 25px;
+  padding: 0 10px;
+  border: 1px solid var(--arc-part-ring);
+  border-radius: 3px;
+  background: transparent;
+  color: var(--anatomy-muted);
+  font-family: var(--anatomy-mono);
+  font-size: 10.5px;
+  cursor: pointer;
+  transition: color 120ms, border-color 120ms, background 120ms;
+}
+
+.arc-part-btn:hover {
+  color: var(--anatomy-text);
+  background: var(--arc-part-hover);
+  border-color: var(--anatomy-mid);
+}
+
+.arc-part-btn[data-on] {
+  color: var(--anatomy-text);
+  background: var(--arc-button-hover);
+  border-color: var(--anatomy-hi);
+}
+
+.arc-part-num {
+  opacity: 0.5;
+  font-size: 9px;
+}
+
+@media (max-width: 768px) {
+  .arc .iso-plate {
+    padding: 44px 12px 60px;
+  }
+  .arc-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .arc-console {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .arc-telemetry {
+    justify-content: space-between;
+  }
+  .arc-coils-strip {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
