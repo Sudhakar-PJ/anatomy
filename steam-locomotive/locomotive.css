@@ -1,0 +1,439 @@
+/* Steam Locomotive — Anatomy Stylesheet */
+
+.loco-figure {
+  margin: 0 auto;
+  max-width: 1040px;
+  user-select: none;
+}
+
+.loco-stage {
+  position: relative;
+  outline: none;
+  cursor: grab;
+  touch-action: pan-y;
+  background: var(--iso-paper, #0b0d11);
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.loco-stage:active {
+  cursor: grabbing;
+}
+
+.loco-stage > svg,
+.loco-stage > canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.loco-canvas-layer {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  pointer-events: none;
+}
+
+/* In dark mode, volumetric steam and fire can screen-blend cleanly */
+.iso:not([data-theme="light"]) .loco-gl-screen {
+  mix-blend-mode: screen;
+}
+
+.loco-back,
+.loco-front {
+  position: relative;
+}
+
+.loco-front {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.loco-front .it {
+  pointer-events: visiblePainted;
+  cursor: pointer;
+  transition: opacity 0.25s ease;
+}
+
+.loco-front .it:hover {
+  filter: brightness(1.22);
+}
+
+.loco-front .it.dimmed {
+  opacity: 0.22;
+}
+
+.loco-front .it.highlighted {
+  opacity: 1;
+  filter: drop-shadow(0 0 3px rgba(255, 200, 100, 0.45)) brightness(1.3);
+}
+
+/* Internal cutaway visibility */
+.loco-stage[data-cutaway="false"] .cutaway-only {
+  display: none !important;
+}
+
+.loco-stage[data-cutaway="true"] .cutaway-hidden {
+  opacity: 0.18 !important;
+}
+
+/* Control Panel */
+.loco-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 20px;
+  background: rgba(18, 22, 28, 0.85);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+}
+
+.iso[data-theme="light"] .loco-controls {
+  background: rgba(248, 250, 252, 0.92);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.loco-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.loco-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 14px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  color: #d1d5db;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+
+.iso[data-theme="light"] .loco-btn {
+  color: #374151;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.loco-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: #fff;
+}
+
+.iso[data-theme="light"] .loco-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+  color: #111827;
+}
+
+.loco-btn[data-active="true"] {
+  background: rgba(234, 88, 12, 0.22);
+  border-color: rgba(249, 115, 22, 0.6);
+  color: #fdba74;
+}
+
+.iso[data-theme="light"] .loco-btn[data-active="true"] {
+  background: #ffedd5;
+  border-color: #ea580c;
+  color: #c2410c;
+}
+
+.loco-lamp {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #6b7280;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.loco-btn[data-active="true"] .loco-lamp {
+  background: #f97316;
+  box-shadow: 0 0 8px #ea580c;
+}
+
+/* Sliders Wrap */
+.loco-sliders-wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: center;
+}
+
+@media (max-width: 680px) {
+  .loco-sliders-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+.loco-slider-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.iso[data-theme="light"] .loco-slider-group {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.loco-slider-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #9ca3af;
+  min-width: 74px;
+}
+
+.iso[data-theme="light"] .loco-slider-label {
+  color: #6b7280;
+}
+
+.loco-slider {
+  flex: 1;
+  height: 5px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 3px;
+  outline: none;
+  cursor: pointer;
+}
+
+.iso[data-theme="light"] .loco-slider {
+  background: #d1d5db;
+}
+
+.loco-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #f97316;
+  box-shadow: 0 0 6px rgba(234, 88, 12, 0.5);
+  cursor: pointer;
+}
+
+.loco-slider-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fdba74;
+  min-width: 60px;
+  text-align: right;
+}
+
+.iso[data-theme="light"] .loco-slider-val {
+  color: #c2410c;
+}
+
+/* Presets Strip */
+.loco-preset-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.loco-preset-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #9ca3af;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.iso[data-theme="light"] .loco-preset-btn {
+  color: #4b5563;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+}
+
+.loco-preset-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.iso[data-theme="light"] .loco-preset-btn:hover {
+  color: #111827;
+  background: #e5e7eb;
+}
+
+.loco-preset-btn[data-active="true"] {
+  background: rgba(234, 88, 12, 0.25);
+  border-color: #ea580c;
+  color: #fdba74;
+}
+
+.iso[data-theme="light"] .loco-preset-btn[data-active="true"] {
+  background: #ffedd5;
+  border-color: #f97316;
+  color: #c2410c;
+}
+
+.loco-hint {
+  font-size: 11px;
+  color: #6b7280;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  margin-top: 2px;
+}
+
+/* Telemetry Dashboard */
+.loco-telemetry {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 10px;
+  padding: 14px 20px;
+  background: rgba(14, 17, 22, 0.95);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.iso[data-theme="light"] .loco-telemetry {
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.loco-tele-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.iso[data-theme="light"] .loco-tele-item {
+  background: #f9fafb;
+  border: 1px solid #f3f4f6;
+}
+
+.loco-tele-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #9ca3af;
+}
+
+.iso[data-theme="light"] .loco-tele-label {
+  color: #6b7280;
+}
+
+.loco-tele-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.iso[data-theme="light"] .loco-tele-val {
+  color: #111827;
+}
+
+.loco-tele-val[data-hot] {
+  color: #fb923c;
+}
+
+.loco-tele-val[data-cold] {
+  color: #38bdf8;
+}
+
+/* Legend Parts Grid */
+.loco-parts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+  gap: 6px;
+  margin: 14px 0;
+}
+
+.loco-part-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  color: #9ca3af;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.iso[data-theme="light"] .loco-part-btn {
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+}
+
+.loco-part-btn:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.iso[data-theme="light"] .loco-part-btn:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #111827;
+}
+
+.loco-part-btn[data-selected="true"] {
+  background: rgba(234, 88, 12, 0.18);
+  border-color: #ea580c;
+  color: #fdba74;
+}
+
+.iso[data-theme="light"] .loco-part-btn[data-selected="true"] {
+  background: #ffedd5;
+  border-color: #f97316;
+  color: #c2410c;
+}
+
+.loco-part-num {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 10px;
+  font-weight: 700;
+  color: #f97316;
+  background: rgba(249, 115, 22, 0.15);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.iso[data-theme="light"] .loco-part-num {
+  color: #c2410c;
+  background: #fed7aa;
+}
+
+/* Screen reader status */
+.loco-live {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}

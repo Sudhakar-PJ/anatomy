@@ -1,0 +1,313 @@
+.rd {
+  --rd-blend: screen;
+  --rd-button-hover: #232323;
+  --rd-button-ring: #ffffff14;
+  --rd-part-ring: #ffffff10;
+  --rd-part-hover: #ffffff0a;
+  --rd-lamp-off: #4a4a4a;
+  --rd-lamp-on: #ff8a3c;
+  --rd-lamp-glow: #ff7a2a88;
+  --rd-lamp-armed: #ffcf6a;
+  --rd-rim: #ffb46e;
+  --rd-rim-soft: #ff8a3c;
+  --rd-rim-soft-share: 0.45;
+  --rd-flash-0: #fff4e6;
+  --rd-flash-1: #ffd2a066;
+  --rd-flash-2: #ff9a5a22;
+  --rd-flash-3: #ff9a5a00;
+  --rd-deck-0: #ffcf98;
+  --rd-deck-1: #ff8a3abf;
+  --rd-deck-2: #b34a1247;
+  --rd-deck-3: #5a220800;
+  --rd-deck-share: 1;
+}
+
+[data-theme="light"] .rd {
+  --rd-blend: normal;
+  --rd-button-hover: #f0f0ed;
+  --rd-button-ring: #0000001a;
+  --rd-part-ring: #00000014;
+  --rd-part-hover: #0000000a;
+  --rd-lamp-off: #c4c4c4;
+  --rd-lamp-on: #d9480f;
+  --rd-lamp-glow: #d9480f55;
+  --rd-lamp-armed: #c99400;
+  --rd-rim: #c2410c;
+  --rd-rim-soft: #ea580c;
+  --rd-rim-soft-share: 0.25;
+  --rd-flash-0: #ffd9b0;
+  --rd-flash-1: #ffb07a44;
+  --rd-flash-2: #ff8a4a14;
+  --rd-flash-3: #ff8a4a00;
+  --rd-deck-0: #c2410c;
+  --rd-deck-1: #ea580c8c;
+  --rd-deck-2: #f9731633;
+  --rd-deck-3: #f9731600;
+  --rd-deck-share: 0.45;
+}
+
+.rd .iso-plate {
+  padding: 52px 24px 64px;
+  overflow: hidden;
+}
+
+.rd-stage {
+  position: relative;
+  border-radius: 10px;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+  will-change: transform;
+}
+
+.rd-stage:focus-visible {
+  outline: 1px solid var(--anatomy-muted);
+  outline-offset: 6px;
+}
+
+.rd-stage > svg,
+.rd-stage > canvas,
+.rd-stage > div {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.rd-front,
+.rd-plume,
+.rd-glow,
+.rd-veil,
+.rd-flash {
+  position: absolute;
+  inset: 0;
+  height: 100% !important;
+}
+
+.rd-plume,
+.rd-glow,
+.rd-veil,
+.rd-flash {
+  pointer-events: none;
+}
+
+.rd-plume,
+.rd-glow,
+.rd-veil {
+  mix-blend-mode: var(--rd-blend);
+}
+
+.rd-glow {
+  overflow: visible;
+}
+
+.rd-front {
+  pointer-events: none;
+  overflow: visible;
+}
+
+.rd-front .it {
+  pointer-events: visiblePainted;
+}
+
+.rd-flash {
+  opacity: 0;
+  mix-blend-mode: var(--rd-blend);
+  background: radial-gradient(circle closest-side at 50% 82%, var(--rd-flash-0) 0%, var(--rd-flash-1) 24%, var(--rd-flash-2) 56%, var(--rd-flash-3) 100%);
+}
+
+.rd-shadow {
+  opacity: 0.45;
+}
+
+.tb-body {
+  fill: var(--anatomy-shade-2);
+  stroke: none;
+}
+
+.tb-shine {
+  fill: var(--anatomy-top);
+  stroke: none;
+}
+
+.tb-shade {
+  fill: var(--anatomy-shade-0);
+  stroke: none;
+}
+
+.rd-stage[data-focus] .it:not([data-on]):not([data-piece="stand"]) {
+  --anatomy-hi: var(--anatomy-mid);
+  --anatomy-mid: var(--anatomy-lo);
+}
+
+.rd-stage[data-focus] .it[data-piece="stand"] {
+  --anatomy-mid: var(--anatomy-lo);
+}
+
+.it[data-on] {
+  --anatomy-hi: var(--anatomy-lit);
+  --anatomy-mid: var(--anatomy-hi);
+}
+
+.it[data-on] .iso-top,
+.it[data-on] .tb-shine {
+  fill: var(--anatomy-lit-top);
+}
+
+.it[data-on] .iso-shade,
+.it[data-on] .tb-body {
+  fill: var(--anatomy-lit-shade);
+}
+
+.it[data-on] [data-seamless] > .iso-shade {
+  stroke: var(--anatomy-lit-shade);
+}
+
+.it[data-on] [data-seamless] > .iso-top {
+  stroke: var(--anatomy-lit-top);
+}
+
+.rd-controls {
+  position: absolute;
+  left: 20px;
+  bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--anatomy-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--anatomy-muted);
+}
+
+.rd-fire {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 28px;
+  padding: 0 13px 0 11px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--anatomy-face);
+  color: var(--anatomy-strong);
+  font: inherit;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px var(--rd-button-ring);
+  transition: background 200ms var(--anatomy-ease), color 200ms var(--anatomy-ease), transform 160ms var(--anatomy-ease);
+}
+
+.rd-fire:hover {
+  background: var(--rd-button-hover);
+}
+
+.rd-fire:active {
+  transform: scale(0.97);
+}
+
+.rd-fire:focus-visible {
+  outline: 1px solid var(--anatomy-muted);
+  outline-offset: 3px;
+}
+
+.rd-lamp {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rd-lamp-off);
+  box-shadow: 0 0 0 0 transparent;
+  transition: background 240ms var(--anatomy-ease), box-shadow 240ms var(--anatomy-ease);
+}
+
+.rd-fire[data-state="on"] .rd-lamp {
+  background: var(--rd-lamp-on);
+  box-shadow: 0 0 10px 2px var(--rd-lamp-glow);
+}
+
+.rd-fire[data-state="armed"] .rd-lamp {
+  background: var(--rd-lamp-armed);
+  box-shadow: 0 0 8px 1px var(--rd-lamp-glow);
+}
+
+.rd-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.rd-part {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 7px;
+  padding: 5px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--anatomy-muted);
+  font: 12.5px/1.3 ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px var(--rd-part-ring);
+  transition: color 160ms var(--anatomy-ease), background 160ms var(--anatomy-ease);
+}
+
+.rd-part:hover,
+.rd-part:focus-visible,
+.rd-part[data-on] {
+  color: var(--anatomy-strong);
+  background: var(--rd-part-hover);
+  outline: none;
+}
+
+.rd-num {
+  font-family: var(--anatomy-mono);
+  font-size: 10px;
+  color: var(--anatomy-muted);
+}
+
+.rd-rim {
+  fill: none;
+  stroke: var(--rd-rim);
+  stroke-width: 1.6;
+  opacity: calc(var(--rim, 0));
+}
+
+.rd-rim-soft {
+  stroke: var(--rd-rim-soft);
+  stroke-width: 4.5;
+  opacity: calc(var(--rim, 0) * var(--rd-rim-soft-share));
+}
+
+@media (max-width: 640px) {
+  .rd .iso-plate {
+    padding: 48px 8px 88px;
+  }
+
+  .rd .iso-plate-corner[data-corner="readout"] {
+    bottom: 46px;
+    right: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rd-stage[data-focus] ~ .rd-controls .rd-hint {
+    visibility: hidden;
+  }
+
+  .rd-controls {
+    left: 14px;
+    bottom: 14px;
+    gap: 10px;
+    max-width: calc(100% - 28px);
+    flex-wrap: wrap;
+  }
+
+  .rd-hint {
+    font-size: 9.5px;
+    letter-spacing: 0.06em;
+    line-height: 1.3;
+  }
+}
