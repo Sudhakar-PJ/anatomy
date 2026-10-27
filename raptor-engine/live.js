@@ -42,17 +42,17 @@ let apart = false;
 let selected = null;
 let inside = false;
 let leaveTimer = 0;
-let touring = !still.matches;
+let touring = false;
 let tourClock = -1;
 let idleTimer = 0;
-let visible = false;
+let visible = true;
 let frame = 0;
 let last = 0;
 let jitter = [0, 0];
 
-const VENT = 0.7;
-const MAIN = 1.25;
-const STEADY = 9;
+const VENT = 0.25;
+const MAIN = 0.55;
+const STEADY = 15;
 const PREBURNER_PC = 0.13;
 const LONGEST = D.plumeLength + 60;
 
@@ -575,6 +575,7 @@ function ignite(fromTour = false) {
   burn.on = true;
   describe();
   burn.armed = true;
+  burn.armedAt = clock;
   burn.tour = fromTour;
   burn.t = 0;
   burn.stopping = -1;
@@ -599,10 +600,12 @@ function pcTarget() {
 }
 
 function stepBurn(dt, calm) {
-  if (burn.on && burn.armed && IDS.every((id) => piece[id].x < 0.002 && !piece[id].pending)) {
-    burn.armed = false;
-    fireState("on");
-    if (calm) burn.t = MAIN + 0.5;
+  if (burn.on && burn.armed) {
+    if (IDS.every((id) => piece[id].x < 0.05 && !piece[id].pending) || clock - burn.armedAt > 0.25) {
+      burn.armed = false;
+      fireState("on");
+      if (calm) burn.t = MAIN + 0.5;
+    }
   }
   const before = burn.t;
   if (burn.on && !burn.armed) burn.t += dt;
@@ -765,11 +768,11 @@ function tick(now) {
   const burning = stepBurn(dt, calm);
   place();
   if (!burn.on) say(idleText());
-  frame = visible && (moving || burning || touring) ? requestAnimationFrame(tick) : 0;
+  frame = (moving || burning || touring || burn.on) ? requestAnimationFrame(tick) : 0;
 }
 
 function run() {
-  if (!frame && visible) {
+  if (!frame) {
     last = 0;
     frame = requestAnimationFrame(tick);
   }
@@ -824,7 +827,11 @@ stage.addEventListener("pointerdown", (event) => {
   run();
 });
 
+let lastFireClick = 0;
 fireButton.addEventListener("click", () => {
+  const now = performance.now();
+  if (now - lastFireClick < 400) return;
+  lastFireClick = now;
   quietTour();
   if (burn.on) shutdown();
   else ignite(false);

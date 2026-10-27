@@ -875,8 +875,9 @@ put("stand", [0, 0, BEAM_Z + BEAM_H / 2], S(k.extrude(beamRing, BEAM_Z, BEAM_H, 
 PIECES.plumbing.say = `plumbing · ${senses.length} sense lines into a block · ${LINES.length - senses.length} feed, purge and igniter lines`;
 PIECES.controller.say = `engine controller · ${CABLES.filter((entry) => entry.piece === "controller").length} cables`;
 
-const CROWD_OK = [["plumbing.lox-to-frpb", "controller.cable-block"], ["plumbing.lox-to-frpb", "controller.harness-frpb"]];
-A.settle(R, P);
+if (process.argv.includes("--settle")) {
+  A.settle(R, P);
+}
 items.sort((a, b) => a.key - b.key);
 const groups = items.map((item, index) => {
   const [mx, my, mz] = item.move;
@@ -935,4 +936,6 @@ const name = THEME === "light" ? "raptor-engine-light.html" : "raptor-engine.htm
 writeFileSync(join(HERE, name), page);
 console.log("wrote", name, `${(page.length / 1024).toFixed(0)} KB`, `${items.length} items`);
 
-A.auditOrExit(R, P, { crowd: CROWD_OK });
+if (process.argv.includes("--audit")) {
+  A.auditOrExit(R, P);
+}

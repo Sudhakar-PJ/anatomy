@@ -498,11 +498,20 @@ const DATA = {
   screenExitA: at([CHAMBER_A_X, 0, Z_EXIT]),
   screenExitB: at([CHAMBER_B_X, 0, Z_EXIT]),
   zExit: Z_EXIT,
+  chamberAX: CHAMBER_A_X,
+  chamberBX: CHAMBER_B_X,
   exitR: EXIT_R,
   plumeLength: Z_EXIT - 20,
   chamberBar: 257,
   vacuumTf: 423,
   backTf: 33, // Sea level backpressure loss
+  columns: COLUMN_AT,
+  columnHalf: COLUMN / 2 + 0.4,
+  columnTop: BEAM_Z + BEAM_H,
+  deckX: DECK.x,
+  deckY: DECK.y,
+  deckW: DECK.w,
+  deckD: DECK.d,
   pieces: Object.fromEntries(Object.entries(PIECES).map(([id, piece]) => [id, { name: piece.name, say: piece.say }])),
   stagger: STAGGER,
   spring: SPRING,
@@ -518,7 +527,7 @@ const lipA = G.circleOf(CF_A, Z_EXIT, EXIT_R, P, 40);
 const lipB = G.circleOf(CF_B, Z_EXIT, EXIT_R, P, 40);
 const glowSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="iso-svg rd-glow" viewBox="0 0 ${W} ${H}" aria-hidden="true"><g class="rd-glow-g"><path class="rd-rim rd-rim-soft" d="${lipA} ${lipB}"/><path class="rd-rim" d="${lipA} ${lipB}"/></g></svg>`;
 
-const stage = `<div class="rd-stage" tabindex="0" role="slider" aria-label="RD-180 dual-chamber staged combustion rocket engine on vertical test stand. Hover to explode assemblies; press I to fire." aria-valuemin="0" aria-valuemax="${DATA.order.length}" aria-valuenow="0" aria-valuetext="5,480 kg · cold">${backSvg}<canvas class="rd-plume" aria-hidden="true"></canvas>${frontSvg}${glowSvg}<div class="rd-flash" aria-hidden="true"></div></div>`;
+const stage = `<div class="rd-stage" tabindex="0" role="slider" aria-label="RD-180 dual-chamber staged combustion rocket engine on vertical test stand. Hover to explode assemblies; press I to fire." aria-valuemin="0" aria-valuemax="${DATA.order.length}" aria-valuenow="0" aria-valuetext="5,480 kg · cold">${backSvg}<canvas class="rd-plume" aria-hidden="true"></canvas>${frontSvg}${glowSvg}<canvas class="rd-veil" aria-hidden="true"></canvas><div class="rd-flash" aria-hidden="true"></div></div>`;
 
 const caption =
   "The NPO Energomash RD-180 is an oxygen-rich staged-combustion rocket engine that powered the Atlas V launcher: liquid oxygen and RP-1 kerosene at 257 bar chamber pressure, generating 390 tf (3.83 MN) of sea-level thrust at 5,480 kg dry mass. A single 180,000 HP (135 MW) turbopump and a single oxygen-rich preburner drive both combustion chambers through a massive insulated bifurcated Y-duct. Four independent hydraulic TVC actuators provide ±8° of pitch, yaw, and roll gimbaling.";
@@ -527,7 +536,7 @@ const body = `<figure class="iso-figure rd"><div class="iso-plate">${corners}${s
 
 const CSS = readFileSync(join(HERE, "rd180.css"), "utf8");
 const LIVE = readFileSync(join(HERE, "rd180-live.js"), "utf8").replace("__DATA__", JSON.stringify(DATA));
-const page = k.pageHtml({ title: "RD-180 Rocket Engine", theme: THEME, body: `<style>${CSS}</style>${body}`, script: kitScript() + glScript() + LIVE, width: 980 });
+const page = k.pageHtml({ title: "RD-180 Rocket Engine", theme: THEME, body: `<style>${CSS}</style>${body}`, script: glScript() + LIVE, width: 980 });
 
 const name = THEME === "light" ? "rd180-light.html" : "rd180.html";
 writeFileSync(join(HERE, name), page);
